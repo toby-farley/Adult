@@ -1,16 +1,13 @@
 module Spreader
     using DataFrames
+    zero = (x) -> return 0
 
     function spread!(df, column)
-        function zero(dummy)
-            return 0
-        end
-        
         columns = unique(select(dropmissing(df), Symbol(column)))[:, :1]     
         
         for col in columns
             ucol = replace(col,"-" => "_")
-            transform!(df, column => zero => Symbol(ucol))
+            transform!(df, column => ((x) -> return 0) => Symbol(ucol))
         end
         
         for row in eachrow(df)
